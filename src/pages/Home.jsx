@@ -6,8 +6,10 @@ import 'aos/dist/aos.css';
 import MovieFeaturesSection from '../components/MovieFeaturesSection';
 import TrendingSection from '../components/TrendingSection';
 import AboutUsSection from '../components/AboutUsSection';
+
 export default function Home() {
   const navigate = useNavigate();
+  
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -75,7 +77,7 @@ export default function Home() {
 
           <button
             data-aos="fade-up"
-          data-aos-duration="1000"
+            data-aos-duration="1000"
             data-aos-delay="700"
             className="bg-pink-600 cursor-pointer text-white py-4 px-10 rounded-3xl text-2xl font-semibold shadow-lg hover:scale-110 hover:bg-pink-700 hover:shadow-xl transition-all duration-300 ease-out transform active:scale-95"
             onClick={() => navigate('/login')}
@@ -93,9 +95,25 @@ export default function Home() {
           </button>
         </div>
       </motion.div>
-      <MovieFeaturesSection />
-      <TrendingSection />
-      <AboutUsSection />
+      
+      {/* Add IDs to each section */}
+      <div id="featured-section">
+        <MovieFeaturesSection />
+      </div>
+      
+      <div id="trending-section">
+        <TrendingSection />
+      </div>
+      
+      <div 
+      // id="categories-section"
+      >
+        {/* Add your categories component here when you create it */}
+      </div>
+      
+      <div id="about-section">
+        <AboutUsSection />
+      </div>
     </div>
   );
 }
