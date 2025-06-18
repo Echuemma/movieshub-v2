@@ -58,9 +58,9 @@ const Footer = () => {
         variants={itemVariants}
       >
         {[
-          { href: "https://github.com/your-username", icon: Github, label: "GitHub" },
-          { href: "https://linkedin.com/in/your-username", icon: Linkedin, label: "LinkedIn" },
-          { href: "https://twitter.com/your-username", icon: Twitter, label: "Twitter" }
+          { href: "https://github.com/Echuemma/movieshub-v2", icon: Github, label: "GitHub" },
+          { href: "https://www.linkedin.com/in/echu-emmanuel-a7a659281/", icon: Linkedin, label: "LinkedIn" },
+          { href: "https://x.com/EchuEmmanuel4", icon: Twitter, label: "Twitter" }
         ].map(({ href, icon: Icon, label }) => (
           <motion.a
             key={label}

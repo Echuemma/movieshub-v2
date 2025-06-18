@@ -87,7 +87,8 @@ const AboutUsSection = () => {
         >
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 backdrop-blur-sm border border-pink-500/30 rounded-full px-6 py-2 mb-6">
             <Camera className="w-5 h-5 text-pink-400" />
-            <span className="text-pink-400 font-medium text-sm tracking-wide">ABOUT CINEMAGIC</span>
+            <span className="text-pink-400 font-medium text-sm tracking-wide">About MoviesHub</span>
+            {/* <span className="text-pink-400 font-medium text-sm tracking-wide">ABOUT CINEMAGIC</span> */}
           </div>
           
           <h1 className="sm:text-2xl lg:text-3xl font-extrabold mb-6 leading-tight">

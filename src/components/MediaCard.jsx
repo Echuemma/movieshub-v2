@@ -30,12 +30,12 @@ export default function MediaCard({ id, title, image, rating, type }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="w-52 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg"
+          className="w-[95%] mx-auto sm:w-52 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg"
         >
           <motion.img
             src={image}
             alt={title}
-            className="w-full h-72 object-cover"
+            className="w-full max-w-xs rounded-2xl shadow-2xl mx-auto lg:mx-0"
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.3 }}
           />
@@ -50,7 +50,7 @@ export default function MediaCard({ id, title, image, rating, type }) {
         onClick={toggleFavorite}
         whileTap={{ scale: 1.3 }}
         whileHover={{ scale: 1.2 }}
-        className="absolute top-2 right-2 text-red-500 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md"
+        className="absolute top-0 right-1 left- text-red-500 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md"
         title={fav ? 'Remove from Favorites' : 'Add to Favorites'}
       >
         {fav ? <FaHeart size={18} /> : <FaRegHeart size={18} />}
