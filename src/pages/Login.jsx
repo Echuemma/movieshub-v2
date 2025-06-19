@@ -236,7 +236,7 @@ export default function LoginPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="john.doe@example.com"
@@ -255,7 +255,7 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"

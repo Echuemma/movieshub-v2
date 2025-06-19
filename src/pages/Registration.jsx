@@ -198,7 +198,7 @@ export default function RegistrationPage() {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                       errors.firstName ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="John"
@@ -218,7 +218,7 @@ export default function RegistrationPage() {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                       errors.lastName ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Doe"
@@ -238,7 +238,7 @@ export default function RegistrationPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="john.doe@example.com"
@@ -257,7 +257,7 @@ export default function RegistrationPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"
@@ -283,7 +283,7 @@ export default function RegistrationPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"
@@ -309,7 +309,7 @@ export default function RegistrationPage() {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="+1 (555) 123-4567"
