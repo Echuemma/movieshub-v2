@@ -35,7 +35,8 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
         </div>
-        <motion.h1
+        {/* <motion.h1 */}
+        <div
           className="text-5xl z-10 font-extrabold text-center tracking-wide"
           animate={{
             scale: [1, 1.05, 1],
@@ -53,7 +54,8 @@ export default function Home() {
           }}
         >
           Welcome to <span className="text-red-500">MoviesHub</span>
-        </motion.h1>
+        </div>
+        {/* </motion.h1> */}
 
         <div className="flex gap-8 z-10">
           <button
@@ -61,7 +63,7 @@ export default function Home() {
             data-aos-duration="1000"
             data-aos-delay="700"
             onClick={() => navigate('/register')}
-            className="bg-blue-600 cursor-pointer text-white py-4 px-10 rounded-3xl text-2xl font-semibold shadow-lg hover:scale-110 hover:bg-blue-700 hover:shadow-xl transition-all duration-300 ease-out transform active:scale-95"
+            className="bg-blue-600 cursor-pointer text-white py-2 px-8 rounded-2xl text-1xl font-semibold shadow-lg hover:scale-110 hover:bg-blue-700 hover:shadow-xl transition-all duration-300 ease-out transform active:scale-95"
             style={{
               boxShadow: '0 4px 15px rgba(37,99,235,0.3)',
             }}
@@ -79,7 +81,7 @@ export default function Home() {
             data-aos="fade-up"
             data-aos-duration="1000"
             data-aos-delay="700"
-            className="bg-pink-600 cursor-pointer text-white py-4 px-10 rounded-3xl text-2xl font-semibold shadow-lg hover:scale-110 hover:bg-pink-700 hover:shadow-xl transition-all duration-300 ease-out transform active:scale-95"
+            className="bg-pink-600 cursor-pointer text-white py-2 px-8 rounded-2xl text-1xl font-semibold shadow-lg hover:scale-110 hover:bg-pink-700 hover:shadow-xl transition-all duration-300 ease-out transform active:scale-95"
             onClick={() => navigate('/login')}
             style={{
               boxShadow: '0 4px 15px rgba(219,39,119,0.3)',
@@ -96,7 +98,6 @@ export default function Home() {
         </div>
       </motion.div>
       
-      {/* Add IDs to each section */}
       <div id="featured-section">
         <MovieFeaturesSection />
       </div>
@@ -108,7 +109,6 @@ export default function Home() {
       <div 
       // id="categories-section"
       >
-        {/* Add your categories component here when you create it */}
       </div>
       
       <div id="about-section">
