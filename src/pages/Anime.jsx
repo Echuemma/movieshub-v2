@@ -12,6 +12,29 @@ export default function Anime() {
   const [searchQuery, setSearchQuery] = useState("");
   const [noResults, setNoResults] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+
+  // Set items per page based on screen size
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      const width = window.innerWidth;
+      if (width < 640) { // mobile
+        setItemsPerPage(8);
+      } else if (width < 1024) { // tablet
+        setItemsPerPage(12);
+      } else { // desktop
+        setItemsPerPage(18);
+      }
+    };
+
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+
   // Load top anime on component mount
   useEffect(() => {
     const loadTopAnime = async () => {
@@ -20,6 +43,7 @@ export default function Anime() {
         setError(null);
         const topAnime = await fetchTopAnime();
         setAnime(topAnime);
+        setCurrentPage(1); // Reset to first page
       } catch (err) {
         setError("Failed to load top anime. Please try again.");
         console.error("Error fetching top anime:", err);
@@ -37,6 +61,7 @@ export default function Anime() {
     setSearchQuery(trimmedQuery);
     setNoResults(false);
     setError(null);
+    setCurrentPage(1); // Reset to first page on search
 
     if (trimmedQuery === "") {
       // Reset to top anime when search is cleared
@@ -56,7 +81,7 @@ export default function Anime() {
     try {
       setSearchLoading(true);
       const results = await searchAnime(trimmedQuery);
-      
+
       if (results.length === 0) {
         setNoResults(true);
         setAnime([]);
@@ -72,13 +97,29 @@ export default function Anime() {
     }
   }, []);
 
+  // Pagination calculations
+  const totalPages = Math.ceil(anime.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentAnime = anime.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Smooth scroll to top of results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLoadMore = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
   // Show initial loading state
   if (loading) {
     return (
-      <div className="px-4 py-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <div className="px-4 py-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <SearchBar onSearch={() => {}} placeholder="Search anime..." disabled />
+          <div className="mb-6">
+            <SearchBar onSearch={() => { }} placeholder="Search anime..." disabled />
           </div>
           <Loader />
         </div>
@@ -87,68 +128,176 @@ export default function Anime() {
   }
 
   return (
-    <div className="px-4 py-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div className="px-4 py-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-            {searchQuery ? `Search Results for "${searchQuery}"` : "Top Anime"}
+        {/* Compact Header Section */}
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            {searchQuery ? `Results for "${searchQuery}"` : "Top Anime"}
           </h1>
-          <SearchBar 
-            onSearch={handleSearch} 
-            placeholder="Search anime..." 
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Search anime..."
             disabled={searchLoading}
           />
         </div>
 
+        {/* View Controls - Mobile First */}
+        {!searchLoading && !error && anime.length > 0 && (
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Showing {startIndex + 1}-{Math.min(endIndex, anime.length)} of {anime.length} anime
+            </div>
+
+            {/* View Mode Toggle - Hidden on very small screens */}
+            <div className="hidden sm:flex items-center space-x-2">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-3 py-1 rounded text-sm ${viewMode === 'grid'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  }`}
+              >
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`px-3 py-1 rounded text-sm ${viewMode === 'list'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  }`}
+              >
+                List
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Loading State for Search */}
         {searchLoading && (
-          <div className="flex justify-center items-center py-12">
+          <div className="flex justify-center items-center py-8">
             <Loader />
           </div>
         )}
 
         {/* Error State */}
         {error && !searchLoading && (
-          <div className="text-center py-12">
-            <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-6 py-4 rounded-lg inline-block">
+          <div className="text-center py-8">
+            <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg inline-block">
               <p className="font-medium">Error</p>
               <p className="text-sm mt-1">{error}</p>
             </div>
           </div>
         )}
 
-        {/* No Results State */}
+        {/* No Results */}
         {noResults && !searchLoading && (
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <div className="text-gray-500 dark:text-gray-400">
-              <svg className="mx-auto h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="mx-auto h-10 w-10 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <h3 className="text-lg font-medium mb-2">No anime found</h3>
-              <p className="text-sm">Try searching with different keywords</p>
+              <p className="text-sm">Try different keywords</p>
             </div>
           </div>
         )}
 
-        {/* Anime Grid */}
-        {!searchLoading && !error && anime.length > 0 && (
+        {/* Results Grid/List */}
+        {!searchLoading && !error && currentAnime.length > 0 && (
           <>
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-              Showing {anime.length} anime {anime.length !== 1 ? 'series' : 'series'}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-              {anime.map((item) => (
-                <MediaCard
-                  key={item.mal_id}
-                  id={item.mal_id}
-                  title={item.title}
-                  image={item.images?.jpg?.image_url || item.images?.webp?.image_url || null}
-                  rating={item.score ? item.score.toFixed(1) : "N/A"}
-                  type="anime"
-                />
-              ))}
-            </div>
+            {viewMode === 'grid' ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                {currentAnime.map((item) => (
+                  <div key={item.mal_id} className="w-full min-w-0">
+                    <MediaCard
+                      id={item.mal_id}
+                      title={item.title}
+                      image={item.images?.jpg?.image_url || item.images?.webp?.image_url || null}
+                      rating={item.score ? item.score.toFixed(1) : "N/A"}
+                      type="anime"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Compact List View
+              <div className="space-y-3">
+                {currentAnime.map((item) => (
+                  <div key={item.mal_id} className="flex items-center space-x-3 bg-white dark:bg-gray-800 p-3 rounded-lg shadow">
+                    <img
+                      src={item.images?.jpg?.image_url || item.images?.webp?.image_url || null}
+                      alt={item.title}
+                      className="w-16 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-gray-900 dark:text-white truncate">{item.title}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">⭐ {item.score ? item.score.toFixed(1) : "N/A"}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Pagination - Mobile Optimized */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex flex-col items-center space-y-4">
+                {/* Load More Button for Mobile */}
+                <div className="sm:hidden">
+                  {currentPage < totalPages && (
+                    <button
+                      onClick={handleLoadMore}
+                      className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                    >
+                      Load More ({anime.length - endIndex} remaining)
+                    </button>
+                  )}
+                </div>
+
+                {/* Traditional Pagination for Desktop */}
+                <div className="hidden sm:flex items-center space-x-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="text-gray-800 dark:text-white px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+
+                  {/* Page Numbers */}
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const pageNum = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
+                    if (pageNum > totalPages) return null;
+
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-3 py-2 rounded ${currentPage === pageNum
+                            ? 'bg-red-500 text-white'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="text-gray-800 dark:text-white px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
+
+                {/* Page Info */}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Page {currentPage} of {totalPages}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

@@ -12,8 +12,32 @@ export default function Movies() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [noResults, setNoResults] = useState(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
   const navigation = useNavigation();
+
+  // Set items per page based on screen size
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      const width = window.innerWidth;
+      if (width < 640) { // mobile
+        setItemsPerPage(8);
+      } else if (width < 1024) { // tablet
+        setItemsPerPage(12);
+      } else { // desktop
+        setItemsPerPage(18);
+      }
+    };
+
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+
   useEffect(() => {
     const loadPopularMovies = async () => {
       try {
@@ -21,6 +45,7 @@ export default function Movies() {
         setError(null);
         const popularMovies = await fetchPopularMovies();
         setMovies(popularMovies);
+        setCurrentPage(1); // Reset to first page
       } catch (err) {
         setError("Failed to load popular movies. Please try again.");
         console.error("Error fetching popular movies:", err);
@@ -31,11 +56,13 @@ export default function Movies() {
 
     loadPopularMovies();
   }, []);
+
   const handleSearch = useCallback(async (query) => {
     const trimmedQuery = query.trim();
     setSearchQuery(trimmedQuery);
     setNoResults(false);
     setError(null);
+    setCurrentPage(1); // Reset to first page on search
 
     if (trimmedQuery === "") {
       try {
@@ -69,11 +96,28 @@ export default function Movies() {
       setSearchLoading(false);
     }
   }, []);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(movies.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMovies = movies.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Smooth scroll to top of results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLoadMore = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
   if (loading || navigation.state === "loading") {
     return (
-      <div className="px-4 py-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <div className="px-4 py-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
+          <div className="mb-6">
             <SearchBar onSearch={() => {}} placeholder="Search movies..." disabled />
           </div>
           <Loader />
@@ -83,11 +127,12 @@ export default function Movies() {
   }
 
   return (
-    <div className="px-4 py-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div className="px-4 py-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-            {searchQuery ? `Search Results for "${searchQuery}"` : "Popular Movies"}
+        {/* Compact Header Section */}
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            {searchQuery ? `Results for "${searchQuery}"` : "Popular Movies"}
           </h1>
           <SearchBar 
             onSearch={handleSearch} 
@@ -96,49 +141,170 @@ export default function Movies() {
           />
         </div>
 
+        {/* View Controls - Mobile First */}
+        {!searchLoading && !error && movies.length > 0 && (
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Showing {startIndex + 1}-{Math.min(endIndex, movies.length)} of {movies.length} movies
+            </div>
+            
+            {/* View Mode Toggle - Hidden on very small screens */}
+            <div className="hidden sm:flex items-center space-x-2">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-3 py-1 rounded text-sm ${
+                  viewMode === 'grid' 
+                    ? 'bg-red-500 text-white' 
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                }`}
+              >
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`px-3 py-1 rounded text-sm ${
+                  viewMode === 'list' 
+                    ? 'bg-red-500 text-white' 
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                }`}
+              >
+                List
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Loading State for Search */}
         {searchLoading && (
-          <div className="flex justify-center items-center py-12">
+          <div className="flex justify-center items-center py-8">
             <Loader />
           </div>
         )}
+
+        {/* Error State */}
         {error && !searchLoading && (
-          <div className="text-center py-12">
-            <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-6 py-4 rounded-lg inline-block">
+          <div className="text-center py-8">
+            <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg inline-block">
               <p className="font-medium">Error</p>
               <p className="text-sm mt-1">{error}</p>
             </div>
           </div>
         )}
 
+        {/* No Results */}
         {noResults && !searchLoading && (
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <div className="text-gray-500 dark:text-gray-400">
-              <svg className="mx-auto h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="mx-auto h-10 w-10 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <h3 className="text-lg font-medium mb-2">No movies found</h3>
-              <p className="text-sm">Try searching with different keywords</p>
+              <p className="text-sm">Try different keywords</p>
             </div>
           </div>
         )}
-        {!searchLoading && !error && movies.length > 0 && (
+
+        {/* Results Grid/List */}
+        {!searchLoading && !error && currentMovies.length > 0 && (
           <>
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-              Showing {movies.length} movie{movies.length !== 1 ? 's' : ''}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-              {movies.map((movie) => (
-                <MediaCard
-                  key={movie.id}
-                  id={movie.id}
-                  title={movie.title}
-                  image={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null}
-                  rating={movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
-                  type="movie"
-                />
-              ))}
-            </div>
+            {viewMode === 'grid' ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                {currentMovies.map((movie) => (
+                  <div key={movie.id} className="w-full min-w-0">
+                    <MediaCard
+                      id={movie.id}
+                      title={movie.title}
+                      image={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null}
+                      rating={movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
+                      type="movie"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Compact List View
+              <div className="space-y-3">
+                {currentMovies.map((movie) => (
+                  <div key={movie.id} className="flex items-center space-x-3 bg-white dark:bg-gray-800 p-3 rounded-lg shadow">
+                    <img
+                      src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : '/placeholder-movie.jpg'}
+                      alt={movie.title}
+                      className="w-16 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-gray-900 dark:text-white truncate">{movie.title}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">⭐ {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</p>
+                      {movie.release_date && (
+                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                          {new Date(movie.release_date).getFullYear()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Pagination - Mobile Optimized */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex flex-col items-center space-y-4">
+                {/* Load More Button for Mobile */}
+                <div className="sm:hidden">
+                  {currentPage < totalPages && (
+                    <button
+                      onClick={handleLoadMore}
+                      className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                    >
+                      Load More ({movies.length - endIndex} remaining)
+                    </button>
+                  )}
+                </div>
+
+                {/* Traditional Pagination for Desktop */}
+                <div className="hidden sm:flex items-center space-x-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="text-gray-800 dark:text-white px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  
+                  {/* Page Numbers */}
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const pageNum = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
+                    if (pageNum > totalPages) return null;
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-3 py-2 rounded ${
+                          currentPage === pageNum
+                            ? 'bg-red-500 text-white'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="text-gray-800 dark:text-white px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
+
+                {/* Page Info */}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Page {currentPage} of {totalPages}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

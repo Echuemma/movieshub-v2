@@ -10,7 +10,7 @@ const Favorites = () => {
 
   if (favorites.length === 0) {
     return (
-      <div className="text-center py-20">
+      <div className="text-center items-center  py-20">
         <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-300">
           No favorites yet
         </h2>

@@ -23,25 +23,32 @@ export default function MediaCard({ id, title, image, rating, type }) {
     <motion.div
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.98 }}
-      className="relative w-full flex justify-center items-center flex-wrap"
+      className="relative w-full max-w-xs mx-auto"
     >
       <Link to={`/${type}s/${id}`}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="w-[95%] mx-auto sm:w-52 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg"
+          className="w-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg"
         >
-          <motion.img
-            src={image}
-            alt={title}
-            className="w-full max-w-xs rounded-2xl shadow-2xl mx-auto lg:mx-0"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3 }}
-          />
-          <div className="p-4">
-            <h2 className="text-lg font-bold text-gray-800 dark:text-white truncate">{title}</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-300">⭐ {rating}</p>
+          {/* Fixed aspect ratio container for image */}
+          <div className="relative w-full aspect-[3/4] overflow-hidden">
+            <motion.img
+              src={image}
+              alt={title}
+              className="w-full h-full object-cover"
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+          
+          {/* Fixed height content area */}
+          <div className="p-4 h-20 flex flex-col justify-between">
+            <h2 className="text-sm font-bold text-gray-800 dark:text-white line-clamp-1 leading-tight">
+              {title}
+            </h2>
+            <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">⭐ {rating}</p>
           </div>
         </motion.div>
       </Link>
@@ -50,10 +57,10 @@ export default function MediaCard({ id, title, image, rating, type }) {
         onClick={toggleFavorite}
         whileTap={{ scale: 1.3 }}
         whileHover={{ scale: 1.2 }}
-        className="absolute top-0 right-1 left- text-red-500 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md"
+        className="absolute top-2 right-2 text-red-500 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md z-10"
         title={fav ? 'Remove from Favorites' : 'Add to Favorites'}
       >
-        {fav ? <FaHeart size={18} /> : <FaRegHeart size={18} />}
+        {fav ? <FaHeart size={16} /> : <FaRegHeart size={16} />}
       </motion.button>
     </motion.div>
   );
