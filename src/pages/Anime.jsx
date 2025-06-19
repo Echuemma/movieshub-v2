@@ -11,21 +11,18 @@ export default function Anime() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [noResults, setNoResults] = useState(false);
-
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
 
-  // Set items per page based on screen size
   useEffect(() => {
     const updateItemsPerPage = () => {
       const width = window.innerWidth;
-      if (width < 640) { // mobile
+      if (width < 640) { 
         setItemsPerPage(8);
-      } else if (width < 1024) { // tablet
+      } else if (width < 1024) { 
         setItemsPerPage(12);
-      } else { // desktop
+      } else { 
         setItemsPerPage(18);
       }
     };
@@ -35,7 +32,6 @@ export default function Anime() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  // Load top anime on component mount
   useEffect(() => {
     const loadTopAnime = async () => {
       try {
@@ -43,7 +39,7 @@ export default function Anime() {
         setError(null);
         const topAnime = await fetchTopAnime();
         setAnime(topAnime);
-        setCurrentPage(1); // Reset to first page
+        setCurrentPage(1); 
       } catch (err) {
         setError("Failed to load top anime. Please try again.");
         console.error("Error fetching top anime:", err);
@@ -55,16 +51,14 @@ export default function Anime() {
     loadTopAnime();
   }, []);
 
-  // Optimized search handler with proper error handling
   const handleSearch = useCallback(async (query) => {
     const trimmedQuery = query.trim();
     setSearchQuery(trimmedQuery);
     setNoResults(false);
     setError(null);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1); 
 
     if (trimmedQuery === "") {
-      // Reset to top anime when search is cleared
       try {
         setSearchLoading(true);
         const topAnime = await fetchTopAnime();
@@ -97,7 +91,6 @@ export default function Anime() {
     }
   }, []);
 
-  // Pagination calculations
   const totalPages = Math.ceil(anime.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -105,7 +98,6 @@ export default function Anime() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Smooth scroll to top of results
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -113,7 +105,6 @@ export default function Anime() {
     setCurrentPage(prev => prev + 1);
   };
 
-  // Show initial loading state
   if (loading) {
     return (
       <div className="px-4 py-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -130,7 +121,6 @@ export default function Anime() {
   return (
     <div className="px-4 py-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        {/* Compact Header Section */}
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
             {searchQuery ? `Results for "${searchQuery}"` : "Top Anime"}
@@ -142,14 +132,12 @@ export default function Anime() {
           />
         </div>
 
-        {/* View Controls - Mobile First */}
         {!searchLoading && !error && anime.length > 0 && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Showing {startIndex + 1}-{Math.min(endIndex, anime.length)} of {anime.length} anime
             </div>
 
-            {/* View Mode Toggle - Hidden on very small screens */}
             <div className="hidden sm:flex items-center space-x-2">
               <button
                 onClick={() => setViewMode('grid')}
@@ -173,14 +161,12 @@ export default function Anime() {
           </div>
         )}
 
-        {/* Loading State for Search */}
         {searchLoading && (
           <div className="flex justify-center items-center py-8">
             <Loader />
           </div>
         )}
 
-        {/* Error State */}
         {error && !searchLoading && (
           <div className="text-center py-8">
             <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg inline-block">
@@ -190,7 +176,6 @@ export default function Anime() {
           </div>
         )}
 
-        {/* No Results */}
         {noResults && !searchLoading && (
           <div className="text-center py-8">
             <div className="text-gray-500 dark:text-gray-400">
@@ -203,7 +188,6 @@ export default function Anime() {
           </div>
         )}
 
-        {/* Results Grid/List */}
         {!searchLoading && !error && currentAnime.length > 0 && (
           <>
             {viewMode === 'grid' ? (
@@ -221,7 +205,6 @@ export default function Anime() {
                 ))}
               </div>
             ) : (
-              // Compact List View
               <div className="space-y-3">
                 {currentAnime.map((item) => (
                   <div key={item.mal_id} className="flex items-center space-x-3 bg-white dark:bg-gray-800 p-3 rounded-lg shadow">
@@ -239,22 +222,19 @@ export default function Anime() {
               </div>
             )}
 
-            {/* Pagination - Mobile Optimized */}
             {totalPages > 1 && (
               <div className="mt-8 flex flex-col items-center space-y-4">
-                {/* Load More Button for Mobile */}
                 <div className="sm:hidden">
                   {currentPage < totalPages && (
                     <button
                       onClick={handleLoadMore}
-                      className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                      className="w-full px-6 py-3 bg-red-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
                     >
                       Load More ({anime.length - endIndex} remaining)
                     </button>
                   )}
                 </div>
 
-                {/* Traditional Pagination for Desktop */}
                 <div className="hidden sm:flex items-center space-x-2">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -264,7 +244,6 @@ export default function Anime() {
                     Previous
                   </button>
 
-                  {/* Page Numbers */}
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     const pageNum = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
                     if (pageNum > totalPages) return null;
