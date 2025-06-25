@@ -19,7 +19,7 @@ const MainLayout = () => {
   return (
     <div>
       <Header />
-      <main className='w-[97%] mx-auto min-h-screen max-w-[1920px]  '>
+      <main className='w-[100%] mx-auto min-h-screen max-w-[1920px]  '>
         {isLoading ? <Loader/> : <Outlet />}
       </main>
       <Footer />

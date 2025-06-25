@@ -24,6 +24,14 @@ const App = () => {
           element: <Home />,
         },
         {
+          path: "/register",
+          element: <Registration />,
+        },
+        {
+          path: "/login",
+          element: <Login />,
+        },
+        {
           path: "/dashboard",
           element: <Dashboard />,
         },
@@ -46,14 +54,6 @@ const App = () => {
         {
           path: "/favorites",
           element: <Favorites />,
-        },
-        {
-          path: "/register",
-          element: <Registration />,
-        },
-        {
-          path: "/login",
-          element: <Login />,
         },
       ],
     },

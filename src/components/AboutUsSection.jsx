@@ -70,7 +70,6 @@ const AboutUsSection = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
@@ -78,7 +77,7 @@ const AboutUsSection = () => {
       </div>
 
       <div className="relative z-10 px-4 py-16 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Hero Section */}
+       
         <div 
           data-element-id="hero"
           className={`text-center mb-20 transition-all duration-1000 ${
@@ -107,7 +106,6 @@ const AboutUsSection = () => {
           </p>
         </div>
 
-        {/* Mission Statement */}
         <div 
           data-element-id="mission"
           className={`mb-20 transition-all duration-1000 delay-200 ${
@@ -131,7 +129,6 @@ const AboutUsSection = () => {
           </div>
         </div>
 
-        {/* Stats Section */}
         <div 
           data-element-id="stats"
           className={`mb-20 transition-all duration-1000 delay-300 ${
@@ -157,7 +154,6 @@ const AboutUsSection = () => {
           </div>
         </div>
 
-        {/* Story Timeline */}
         <div 
           data-element-id="timeline"
           className={`mb-20 transition-all duration-1000 delay-400 ${
@@ -195,7 +191,6 @@ const AboutUsSection = () => {
           </div>
         </div>
 
-        {/* Team Section */}
         <div 
           data-element-id="team"
           className={`mb-20 transition-all duration-1000 delay-500 ${
@@ -235,7 +230,6 @@ const AboutUsSection = () => {
           </div>
         </div>
 
-        {/* Call to Action */}
         <div 
           data-element-id="cta"
           className={`text-center transition-all duration-1000 delay-600 ${
