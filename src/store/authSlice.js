@@ -57,6 +57,7 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// Improved auth state listener
 export const initializeAuth = createAsyncThunk(
   'auth/initialize',
   async (_, { dispatch }) => {
@@ -91,7 +92,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      state.isAuthenticated = true;
+      state.isAuthenticated = !!action.payload; // Ensure boolean
       state.error = null;
     },
     clearUser: (state) => {
@@ -101,6 +102,10 @@ const authSlice = createSlice({
     },
     setInitialized: (state, action) => {
       state.isInitialized = action.payload;
+      // Stop loading when initialized
+      if (action.payload) {
+        state.isLoading = false;
+      }
     },
     clearError: (state) => {
       state.error = null;
@@ -156,6 +161,19 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      // Initialize auth cases
+      .addCase(initializeAuth.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(initializeAuth.fulfilled, (state) => {
+        state.isLoading = false;
+        // User state is already set by the onAuthStateChanged callback
+      })
+      .addCase(initializeAuth.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        state.isInitialized = true; // Still mark as initialized even if error
       });
   },
 });

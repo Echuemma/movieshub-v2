@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { fetchTopAnime, searchAnime } from "../Apis/fetchAnime";
 import MediaCard from "../components/MediaCard";
 import SearchBar from "../components/SearchBar";
+import LogoutButton from "../components/LogoutButton";
 import Loader from "./Loader";
 
 export default function Anime() {
@@ -130,6 +131,7 @@ export default function Anime() {
             placeholder="Search anime..."
             disabled={searchLoading}
           />
+          <LogoutButton variant="default" />
         </div>
 
         {!searchLoading && !error && anime.length > 0 && (

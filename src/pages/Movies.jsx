@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { fetchPopularMovies, searchMovies } from "../Apis/fetchMovies";
 import MediaCard from "../components/MediaCard";
 import SearchBar from "../components/SearchBar";
+import LogoutButton from "../components/LogoutButton";
 import Loader from "./Loader";
 import { useNavigation } from "react-router-dom";
 
@@ -133,6 +134,7 @@ export default function Movies() {
             placeholder="Search movies..." 
             disabled={searchLoading}
           />
+             <LogoutButton variant="default" />
         </div>
 
         {!searchLoading && !error && movies.length > 0 && (
@@ -282,7 +284,6 @@ export default function Movies() {
                   </button>
                 </div>
 
-                {/* Page Info */}
                 <div className="text-sm text-gray-500 dark:text-gray-400">
                   Page {currentPage} of {totalPages}
                 </div>
