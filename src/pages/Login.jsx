@@ -239,7 +239,7 @@ export default function LoginPage() {
                   className={`w-full pl-10 pr-2 py-1 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  placeholder="john.doe@example.com"
+                  placeholder="example@example.com"
                 />
               </div>
               {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}

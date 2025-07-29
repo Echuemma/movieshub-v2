@@ -16,14 +16,12 @@ import AnimeDetails from "./pages/AnimeDetails";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 
-// Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
   </div>
 );
 
-// Auth Wrapper Component to initialize Firebase auth
 const AuthWrapper = ({ children }) => {
   const dispatch = useDispatch();
   const { isInitialized, isLoading } = useSelector((state) => state.auth);
@@ -32,7 +30,6 @@ const AuthWrapper = ({ children }) => {
     dispatch(initializeAuth());
   }, [dispatch]);
 
-  // Show loading spinner while initializing auth
   if (!isInitialized || isLoading) {
     return <LoadingSpinner />;
   }
@@ -46,7 +43,6 @@ const route = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <h1>404 Not Found</h1>,
     children: [
-      // Public routes
       {
         path: "/",
         element: <Home />,
@@ -112,7 +108,6 @@ const route = createBrowserRouter([
   },
 ]);
 
-// Router Component that needs to be inside Provider
 const AppRouter = () => {
   return (
     <AuthWrapper>

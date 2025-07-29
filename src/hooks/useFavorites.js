@@ -2,32 +2,49 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 import { 
   addToFavorites, 
-  removeFromFavorites 
-} from '../store/favoritesSlice'; // Adjust this import based on your store structure
+  removeFromFavorites,
+  clearFavorites 
+} from '../store/favoritesSlice'; 
 
 const useFavorites = () => {
   const dispatch = useDispatch();
   
-  // Safely access favorites from state with fallback
   const favorites = useSelector((state) => {
-    // Debug log to see what the state looks like
-    console.log('Full state:', state);
-    console.log('Favorites state:', state.favorites);
     return state.favorites?.items || [];
   });
 
   const addFavorite = useCallback(
-    (item) => dispatch(addToFavorites(item)),
+    (item) => {
+      if (!item || !item.id) {
+        console.warn('Cannot add favorite: item must have an id');
+        return;
+      }
+      dispatch(addToFavorites(item));
+    },
     [dispatch]
   );
 
   const removeFavorite = useCallback(
-    (id) => dispatch(removeFromFavorites(id)),
+    (id) => {
+      if (!id) {
+        console.warn('Cannot remove favorite: id is required');
+        return;
+      }
+      dispatch(removeFromFavorites(id));
+    },
+    [dispatch]
+  );
+
+  const clearAllFavorites = useCallback(
+    () => dispatch(clearFavorites()),
     [dispatch]
   );
 
   const isFavorite = useCallback(
-    (id) => favorites.some(item => item.id === id),
+    (id) => {
+      if (!id) return false;
+      return favorites.some(item => item.id === id);
+    },
     [favorites]
   );
 
@@ -36,12 +53,19 @@ const useFavorites = () => {
     [favorites]
   );
 
+  const getFavoriteById = useCallback(
+    (id) => favorites.find(item => item.id === id),
+    [favorites]
+  );
+
   return {
     favorites,
     addFavorite,
     removeFavorite,
+    clearAllFavorites,
     isFavorite,
     getFavoriteCount,
+    getFavoriteById,
   };
 };
 

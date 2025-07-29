@@ -312,7 +312,7 @@ export default function RegistrationPage() {
                   className={`w-full pl-10 pr-2 py-1 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white dark:bg-gray-700 dark:text-white ${
                     errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+234 905 000 0011"
                 />
               </div>
               {errors.phoneNumber && <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>}
